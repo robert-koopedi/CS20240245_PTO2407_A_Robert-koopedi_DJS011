@@ -6,22 +6,31 @@ import '../index.css';
 function Home() {
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch('https://podcast-api.netlify.app')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Network response was not ok: ${res.statusText}`);
+        }
+        res.json()
+      })
       .then(data => {
         console.log("API response:", data);
-        setShows(data);
+        const sortedShows = data.sort((a, b) => a.title.localeCompare(b.title));
+        setShows(sortedShows);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching shows:', err);
-        setLoading(false);
+         console.error('Error fetching shows:', err);
+         setError('Failed to load shows.');
+         setLoading(false);
       });
   }, []);
 
   if (loading) return <div className="p-4">Loading shows...</div>;
+  if (error) return <div className="p-4 text-red-600">{error}</div>;
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
