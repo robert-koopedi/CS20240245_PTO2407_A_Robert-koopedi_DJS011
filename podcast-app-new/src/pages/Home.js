@@ -14,7 +14,7 @@ function Home() {
         if (!res.ok) {
           throw new Error(`Network response was not ok: ${res.statusText}`);
         }
-        res.json()
+        return res.json();
       })
       .then(data => {
         console.log("API response:", data);
@@ -41,6 +41,16 @@ function Home() {
             <Link to={`/show/${show.id}`}>
               <img src={show.image} alt={show.title} className="w-20 h-48 rounded" />
               <h2 className="mt-2 text-xl font-semibold">{show.title}</h2>
+              {/* Show podcast title */}
+              <h2>{show.title}</h2>
+              {/* Display genres if available */}
+              <p>
+                Genres: {show.genres && show.genres.length > 0 ? show.genres.join(', ') : 'N/A'}
+              </p>
+              {/* Display number of seasons if available */}
+              <p>
+                Seasons: {show.seasons ? show.seasons.length : 'N/A'}
+                </p>
             </Link>
           </li>
         ))}
