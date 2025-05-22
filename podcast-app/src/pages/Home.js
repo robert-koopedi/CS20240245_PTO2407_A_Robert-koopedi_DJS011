@@ -18,17 +18,17 @@ function Home() {
       });
   }, []);
 
-  if (loading) return <div>Loading shows...</div>;
+  if (loading) return <div className="p-4">Loading shows...</div>;
 
   return (
-    <div>
-      <h1>Podcast Shows</h1>
-      <ul>
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Podcast Shows</h1>
+      <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {shows.map(show => (
-          <li key={show.id} >
+          <li key={show.id} className="border p-4 rounded shadow hover:shadow-lg transition">
             <Link to={`/show/${show.id}`}>
-              <img src={show.image} alt={show.title} />
-              <h2>{show.title}</h2>
+              <img src={show.image} alt={show.title} className="w-full h-48 object-cover rounded" />
+              <h2 className="mt-2 text-xl font-semibold">{show.title}</h2>
             </Link>
           </li>
         ))}
