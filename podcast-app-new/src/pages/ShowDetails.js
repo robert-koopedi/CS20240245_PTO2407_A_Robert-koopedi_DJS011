@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 function ShowDetails() {
+   // Get the show ID from the URL parameters
   const { id } = useParams();
+  
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Placeholder audio URL used for playing episodes
+  const placeholderAudio = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
   useEffect(() => {
     const fetchShow = async () => {
@@ -40,6 +45,7 @@ function ShowDetails() {
 
       <h2>Seasons:</h2>
       <ul>
+        {/* List all seasons with their title and number of episodes */}
         {show.seasons.map((season) => (
           <li key={season.id}>
             Season {season.season}: {season.title} ({season.episodes.length} episodes)

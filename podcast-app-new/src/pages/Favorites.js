@@ -24,7 +24,7 @@ function Favorites() {
       <ul>
         {favorites.map((show) => (
           <li key={show.id}>
-            {/* Link to the show's details page */}
+            
             <Link to={`/show/${show.id}`}>
               <img src={show.image} alt={show.title} width={100} />
               <p>{show.title}</p>
