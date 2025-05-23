@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef } from 'react';
+import GlobalAudioPlayer from '../components/GlobalAudioPlayer';
 
 const AudioPlayerContext = createContext();
 
