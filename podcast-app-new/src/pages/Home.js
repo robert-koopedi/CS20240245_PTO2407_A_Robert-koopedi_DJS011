@@ -40,9 +40,8 @@ function Home() {
           <li key={show.id} className="border p-4 rounded shadow hover:shadow-lg transition">
             <Link to={`/show/${show.id}`}>
               <img src={show.image} alt={show.title} className="w-20 h-48 rounded" />
-              <h2 className="mt-2 text-xl font-semibold">{show.title}</h2>
               {/* Show podcast title */}
-              <h2>{show.title}</h2>
+              <h2 className="mt-2 text-xl font-semibold"> {show.title}</h2>
               {/* Display genres if available */}
               <p>
                 Genres: {show.genres && show.genres.length > 0 ? show.genres.join(', ') : 'N/A'}
