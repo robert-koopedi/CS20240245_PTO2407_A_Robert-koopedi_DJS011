@@ -24,7 +24,7 @@ export function AudioPlayerProvider({ children }) {
   const resumeEpisode = () => {
     audioRef.current.play();
   };
-
+  
   return (
     <AudioPlayerContext.Provider value={{ currentEpisode, playEpisode, pauseEpisode, resumeEpisode }}>
       {children}
