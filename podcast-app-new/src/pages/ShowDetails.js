@@ -63,9 +63,11 @@ function ShowDetails() {
         ))}
       </div>
 
+      {/*Selected season title and number of episodes */}
       <h3>{selectedSeason.title}</h3>
       <p>{selectedSeason.episodes.length} episodes</p>
-
+      
+      {/* ✅ Render EpisodeCard for each episode */}
       <div>
         {selectedSeason.episodes.map((episode) => (
           <EpisodeCard

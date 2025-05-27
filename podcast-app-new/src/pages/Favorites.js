@@ -13,6 +13,14 @@ function Favorites() {
     }
   }, []);
 
+   const groupedFavourites = favorites.reduce((acc, episode) => {
+    const { showTitle, season } = episode;
+    if (!acc[showTitle]) acc[showTitle] = {};
+    if (!acc[showTitle][season]) acc[showTitle][season] = [];
+    acc[showTitle][season].push(episode);
+    return acc;
+  }, {});
+
   // If there are no favorites stored, show a message
   if (favorites.length === 0) {
     return <p>No favorites yet.</p>;
@@ -21,9 +29,22 @@ function Favorites() {
   return (
      <div>
       <h1>My Favorite Podcasts</h1>
+
+      {/* Loops throughn shows */}
+      
+      {Object.entries(seasons).map(([showTitle, season]) => (
+        <div key={showTitle} >
+          <h2>{showTitle}</h2>
+
+           {/* Loop through seasons of each show */}
+          {Object.entries(seasons).map(([season, episodes]) => (
+            <div key={season}>
+              <h3>Season {season}</h3>
       <ul>
-        {favorites.map((show) => (
-          <li key={show.id}>
+        {episodes.map((ep) => (
+          <li key={ep.episodeId}>
+            <p><strong>{ep.title}</strong></p>
+
             
             <Link to={`/show/${show.id}`}>
               <img src={show.image} alt={show.title} width={100} />
@@ -32,6 +53,10 @@ function Favorites() {
           </li>
         ))}
       </ul>
+            </div>
+        ))}
+        </div>
+      ))}
     </div>
   );
 }
