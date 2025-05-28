@@ -89,6 +89,13 @@ function Favorites() {
           onChange={(e) => setFilterText(e.target.value)}
           style={{ padding: '0.5rem' }}
         />
+        
+        <button onClick={() => {
+          if (window.confirm("Clear all favorites?")) {
+            localStorage.removeItem('favorites');
+            setFavorites([]);
+          }
+        }}>Clear All Favorites</button>        
 
         {/* Dropdown to filter by show title */}
         <label>
@@ -102,6 +109,8 @@ function Favorites() {
             ))}
           </select>
         </label>
+
+
 
         {/* Dropdown to sort the favorites list */}
         <label>
@@ -138,6 +147,7 @@ function Favorites() {
                       <button onClick={() => handleRemoveFavorite(ep)}>
                         Remove from Favorites
                       </button>
+                      
                     </li>
                   ))}
                 </ul>
