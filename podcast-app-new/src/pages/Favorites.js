@@ -37,17 +37,17 @@ function Favorites() {
           <h2>{showTitle}</h2>
 
            {/* Loop through seasons of each show */}
-          {Object.entries(seasons).map(([season, episodes]) => (
-            <div key={season}>
-              <h3>Season {season}</h3>
+          {Object.entries(seasons).map(([seasonNumber, episodes]) => (
+            <div key={seasonNumber}>
+              <h3>Season {seasonNumber}</h3>
               <ul>
                {episodes.map((ep) => (
-                 <li key={ep.episodeId}>
+                 <li key={ep.episodeID}>
                    <p><strong>{ep.title}</strong></p>
-                   {/* Date episode was added. */}
+                   {/* Date Favorite episode was added. */}
                    <p>Added: {new Date(ep.favouritedAt).toLocaleString()}</p>
-                   <Link to={`/show/${ep.id}`}>
-                    <img src={ep.image} alt={ep.showtitle} width={100} />
+                   <Link to={`/show/${ep.showId}`}>
+                    <img src={ep.image} alt={ep.showTitle} width={100} />
                     <p>{ep.showTitle}</p>
                    </Link>
                  </li>

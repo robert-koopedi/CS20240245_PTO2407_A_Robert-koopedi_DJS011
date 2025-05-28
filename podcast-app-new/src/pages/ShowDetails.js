@@ -66,23 +66,20 @@ function ShowDetails() {
       {/*Selected season title and number of episodes */}
       <h3>{selectedSeason.title}</h3>
       <p>{selectedSeason.episodes.length} episodes</p>
-      
-      {/* ✅ Render EpisodeCard for each episode */}
+
+      {/*Render EpisodeCard for each episode */}
       <div>
         {selectedSeason.episodes.map((episode) => (
-          <EpisodeCard
-            key={episode.id}
-            episode={episode}
-            onPlay={() =>
-              playEpisode({
-                title: episode.title,
-                audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Placeholder
-              })
-            }
-          />
-        ))}
-      </div>
+          <EpisodeCard 
+          key={episode.episodeId || episode.id}
+          episode={episode}
+          showTitle={show.title}                 // pass show title
+          showId={show.id}                       // pass show ID
+         season={selectedSeason.season || selectedSeasonIndex + 1} // pass readable season number
+       />
+      ))}
     </div>
+   </div>
   );
 }
 
