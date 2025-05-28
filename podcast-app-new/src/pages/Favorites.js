@@ -13,6 +13,20 @@ function Favorites() {
     }
   }, []);
 
+   // Remove a favorite by matching showId, season, and episodeId
+  const handleRemoveFavorite = (episodeToRemove) => {
+    const updatedFavorites = favorites.filter(
+      (ep) =>
+        !(
+          ep.showId === episodeToRemove.showId &&
+          ep.season === episodeToRemove.season &&
+          ep.episodeId === episodeToRemove.episodeId
+        )
+    );
+    setFavorites(updatedFavorites);
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+  };
+
    const groupedFavourites = favorites.reduce((acc, episode) => {
     const { showTitle, season } = episode;
     if (!acc[showTitle]) acc[showTitle] = {};
@@ -42,14 +56,17 @@ function Favorites() {
               <h3>Season {seasonNumber}</h3>
               <ul>
                {episodes.map((ep) => (
-                 <li key={ep.episodeID}>
+                 <li key={`${ep.showId}-${ep.season}-${ep.episodeId}`}>
                    <p><strong>{ep.title}</strong></p>
                    {/* Date Favorite episode was added. */}
                    <p>Added: {new Date(ep.favouritedAt).toLocaleString()}</p>
                    <Link to={`/show/${ep.showId}`}>
-                    <img src={ep.image} alt={ep.showTitle} width={100} />
+                    <img src={ep.image} alt={ep.showTitle} width={100} height={100} />
                     <p>{ep.showTitle}</p>
                    </Link>
+                   <button onClick={() => handleRemoveFavorite(ep)}>
+                      Remove from Favorites
+                    </button>
                  </li>
                ))}
              </ul>

@@ -63,6 +63,8 @@ function ShowDetails() {
         ))}
       </div>
 
+      
+
       {/*Selected season title and number of episodes */}
       <h3>{selectedSeason.title}</h3>
       <p>{selectedSeason.episodes.length} episodes</p>
