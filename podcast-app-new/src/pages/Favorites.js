@@ -158,7 +158,9 @@ function Favorites() {
                       <p><strong>{ep.title}</strong></p>
                       <p>Added: {new Date(ep.favouritedAt).toLocaleString()}</p>
                       <Link to={`/show/${ep.showId}`}>
-                        <img src={ep.image} alt={ep.showTitle} width={100} height={100} />
+                        <img src={ep.image || '/placeholder.jpg'} alt={ep.showTitle} width={100} height={100}
+                        onError={(e) => (e.target.src = '/placeholder.jpg')}
+                        />
                         <p>{ep.showTitle}</p>
                       </Link>
                       <button onClick={() => handleRemoveFavorite(ep)}>
