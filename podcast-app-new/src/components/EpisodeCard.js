@@ -1,15 +1,30 @@
-import React from 'react';
+import React, {useEffect, useState } from 'react';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 
 function EpisodeCard({ episode, showTitle, showId, season }) {
   const { playEpisode } = useAudioPlayer();
+  const [isFavorited, setIsFavorited] = useState(false);
 
-  const handleFavorite = (episode) => {
+  // Check once on mount 
+  useEffect(() => {
+    try {
+    const existing = JSON.parse(localStorage.getItem('favorites')) || [];
+    const found = existing.some(ep => ep.episodeId === episode.episodeId);
+    setIsFavorited(found);
+    } catch (e) {
+      console.error('Failed to read favorites from localStorage:', e)
+    }
+  }, [episode.episodeId]);
+
+  const handleFavorite = () => {
   const existing = JSON.parse(localStorage.getItem('favorites')) || [];
 
   // Avoid duplicates
   const isAlreadyFavorited = existing.some(ep => ep.episodeId === episode.episodeId);
-  if (isAlreadyFavorited) return;
+  if (isAlreadyFavorited) {
+    setIsFavorited(true)
+    return;
+  }
 
   const newFavorite = {
     episodeId: episode.episodeId,
@@ -24,6 +39,7 @@ function EpisodeCard({ episode, showTitle, showId, season }) {
 
   const updated = [...existing, newFavorite];
   localStorage.setItem('favorites', JSON.stringify(updated));
+  setIsFavorited(true);
 };
 
 
@@ -36,10 +52,12 @@ function EpisodeCard({ episode, showTitle, showId, season }) {
 
   return (
      <div>
-      <button onClick={handleFavorite}>Favorites</button>
       <p>{episode.title}</p>
-       <button onClick={handlePlay}>Play</button>
-    </div>
+      <button onClick={handlePlay}>Play</button>
+      <button onClick={handleFavorite} disabled= {isFavorited}>
+       {isFavorited ? '★ Favorited' : '☆ Add to Favorites'}
+        </button>
+     </div>
     
   );
 }
