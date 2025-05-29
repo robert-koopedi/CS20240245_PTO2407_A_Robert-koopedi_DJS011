@@ -13,6 +13,16 @@ function Favorites() {
 
   // State for sorting favorites
   const [sortBy, setSortBy] = useState('date-desc'); // default: newest first
+  
+  // Load preferences on component mount
+  useEffect(() => {
+  const savedPreferences = JSON.parse(localStorage.getItem('favoritePrefs'));
+  if (savedPreferences) {
+    setFilterText(savedPreferences.filterText || '');
+    setShowFilter(savedPreferences.showFilter || 'all');
+    setSortBy(savedPreferences.sortBy || 'date-desc'); 
+    }
+  }, []);
 
   // Load favorites from localStorage when component mounts
   useEffect(() => {
@@ -21,6 +31,13 @@ function Favorites() {
       setFavorites(JSON.parse(stored));
     }
   }, []);
+    // Save preferences on change
+    useEffect(() => {
+    localStorage.setItem(
+      'favoritePrefs',
+      JSON.stringify({ filterText, showFilter, sortBy })
+    );
+  }, [filterText, showFilter, sortBy]);
 
   // Remove a favorite episode from list and localStorage
   const handleRemoveFavorite = (episodeToRemove) => {

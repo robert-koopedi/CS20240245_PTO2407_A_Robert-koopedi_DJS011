@@ -54,7 +54,7 @@ function ShowDetails() {
       <div>
         {show.seasons.map((season, index) => (
           <button
-            key={season.id}
+            key={season.id || `season-${index}`} // Fallback key using index
             onClick={() => setSelectedSeasonIndex(index)}
             disabled={selectedSeasonIndex === index}
           >
@@ -71,9 +71,9 @@ function ShowDetails() {
 
       {/*Render EpisodeCard for each episode */}
       <div>
-        {selectedSeason.episodes.map((episode) => (
+        {selectedSeason.episodes.map((episode, index) => (
           <EpisodeCard 
-          key={episode.episodeId || episode.id}
+          key={episode.episodeId || episode.id || `episode-${index}`} // Safe fallback
           episode={episode}
           showTitle={show.title}                 // pass show title
           showId={show.id}                       // pass show ID
