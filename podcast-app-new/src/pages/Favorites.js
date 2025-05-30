@@ -2,187 +2,159 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import '../index.css';
 
+const GENRE_MAP = {
+  1: 'Personal Growth',
+  2: 'Investigative Journalism',
+  3: 'History',
+  4: 'Comedy',
+  5: 'Entertainment',
+  6: 'Business',
+  7: 'Fiction',
+  8: 'News',
+  9: 'Kids and Family',
+};
+
 function Favorites() {
-  const [favorites, setFavorites] = useState([]);
+  const [favoriteShowIds, setFavoriteShowIds] = useState(() => {
+    const saved = localStorage.getItem('favoriteShows');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [shows, setShows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [filterText, setFilterText] = useState('');
-  const [showFilter, setShowFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('date-desc');
+  const [selectedGenre, setSelectedGenre] = useState('All');
+  const [sortOption, setSortOption] = useState('titleAsc');
 
   useEffect(() => {
-    const savedPreferences = JSON.parse(localStorage.getItem('favoritePrefs'));
-    if (savedPreferences) {
-      setFilterText(savedPreferences.filterText || '');
-      setShowFilter(savedPreferences.showFilter || 'all');
-      setSortBy(savedPreferences.sortBy || 'date-desc');
-    }
-  }, []);
+    fetch('https://podcast-api.netlify.app/shows')
+      .then((res) => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then((data) => {
+        const favShows = data.filter((show) => favoriteShowIds.includes(show.id));
+        setShows(favShows);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Failed to load favorite shows.');
+        setLoading(false);
+      });
+  }, [favoriteShowIds]);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('favorites');
-    if (stored) {
-      setFavorites(JSON.parse(stored));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(
-      'favoritePrefs',
-      JSON.stringify({ filterText, showFilter, sortBy })
-    );
-  }, [filterText, showFilter, sortBy]);
-
-  const handleRemoveFavorite = (episodeToRemove) => {
-    const updatedFavorites = favorites.filter(
-      (ep) =>
-        !(
-          ep.showId === episodeToRemove.showId &&
-          ep.season === episodeToRemove.season &&
-          ep.episodeId === episodeToRemove.episodeId
-        )
-    );
-    setFavorites(updatedFavorites);
-    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+  const removeFavorite = (id) => {
+    const updated = favoriteShowIds.filter((favId) => favId !== id);
+    setFavoriteShowIds(updated);
+    localStorage.setItem('favoriteShows', JSON.stringify(updated));
   };
 
-  const filteredAndSortedFavorites = useMemo(() => {
-    return [...favorites]
-      .filter((fav) => {
-        const matchesText = (fav?.title || '').toLowerCase().includes(filterText.toLowerCase());
-        const matchesShow = showFilter === 'all' || fav.showTitle === showFilter;
-        return matchesText && matchesShow;
-      })
-      .sort((a, b) => {
-        switch (sortBy) {
-          case 'date-asc':
-            return new Date(a.favouritedAt) - new Date(b.favouritedAt);
-          case 'title-asc':
-            return (a.title || '').localeCompare(b.title || '');
-          case 'title-desc':
-            return (b.title || '').localeCompare(a.title || '');
-          case 'date-desc':
-          default:
-            return new Date(b.favouritedAt) - new Date(a.favouritedAt);
-        }
-      });
-  }, [favorites, filterText, showFilter, sortBy]);
+  const getUniqueGenres = () => {
+    const genreSet = new Set();
+    shows.forEach(show => {
+      show.genres?.forEach(id => genreSet.add(id));
+    });
+    return Array.from(genreSet).sort((a, b) => GENRE_MAP[a].localeCompare(GENRE_MAP[b]));
+  };
 
-  const groupedFavourites = useMemo(() => {
-    return filteredAndSortedFavorites.reduce((acc, episode) => {
-      const { showTitle, season } = episode;
-      if (!acc[showTitle]) acc[showTitle] = {};
-      if (!acc[showTitle][season]) acc[showTitle][season] = [];
-      acc[showTitle][season].push(episode);
-      return acc;
-    }, {});
-  }, [filteredAndSortedFavorites]);
+  const filteredAndSortedShows = useMemo(() => {
+    let filtered = shows;
 
-  if (favorites.length === 0) {
-    return <p>No favorites yet.</p>;
-  }
+    if (selectedGenre !== 'All') {
+      filtered = filtered.filter(show =>
+        show.genres?.includes(Number(selectedGenre))
+      );
+    }
+
+    if (filterText.trim() !== '') {
+      filtered = filtered.filter(show =>
+        show.title.toLowerCase().includes(filterText.toLowerCase())
+      );
+    }
+
+    switch (sortOption) {
+      case 'titleAsc':
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'titleDesc':
+        filtered.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case 'dateDesc':
+        filtered.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+        break;
+      case 'dateAsc':
+        filtered.sort((a, b) => new Date(a.updated) - new Date(b.updated));
+        break;
+      default:
+        break;
+    }
+
+    return filtered;
+  }, [shows, filterText, sortOption, selectedGenre]);
+
+  if (loading) return <div>Loading favorite shows...</div>;
+  if (error) return <div>{error}</div>;
+  if (favoriteShowIds.length === 0) return <p>No favorite shows yet.</p>;
 
   return (
     <div className="favorites-container">
-      <h1 className="favorites-heading">My Favorite Podcasts</h1>
+      <h1>My Favorite Shows</h1>
 
-      <div className="favorites-controls">
+      {/* Controls */}
+      <div className="filter-controls" style={{ marginBottom: '1.5rem' }}>
         <input
           type="text"
-          placeholder="Search episode title..."
+          placeholder="Search by title..."
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
-          className="favorites-search"
+          style={{ marginRight: '1rem', padding: '0.4rem' }}
         />
 
-        <button
-          onClick={() => {
-            if (window.confirm("Clear all favorites?")) {
-              localStorage.removeItem('favorites');
-              setFavorites([]);
-            }
-          }}
-          className="favorites-clear-btn"
+        <select
+          value={selectedGenre}
+          onChange={(e) => setSelectedGenre(e.target.value)}
+          style={{ marginRight: '1rem', padding: '0.4rem' }}
         >
-          Clear All Favorites
-        </button>
+          <option value="All">All Genres</option>
+          {getUniqueGenres().map(id => (
+            <option key={id} value={id}>{GENRE_MAP[id]}</option>
+          ))}
+        </select>
 
-        <label className="favorites-label">
-          Show:
-          <select
-            value={showFilter}
-            onChange={(e) => setShowFilter(e.target.value)}
-            className="favorites-select"
-          >
-            <option value="all">All Shows</option>
-            {[...new Set(favorites.map((f) => f.showTitle))].map((title) => (
-              <option key={title} value={title}>
-                {title}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="favorites-label">
-          Sort by:
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="favorites-select"
-          >
-            <option value="date-desc">Date Added (Newest)</option>
-            <option value="date-asc">Date Added (Oldest)</option>
-            <option value="title-asc">Title (A-Z)</option>
-            <option value="title-desc">Title (Z-A)</option>
-          </select>
-        </label>
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          style={{ padding: '0.4rem' }}
+        >
+          <option value="titleAsc">Sort A–Z</option>
+          <option value="titleDesc">Sort Z–A</option>
+          <option value="dateDesc">Newest First</option>
+          <option value="dateAsc">Oldest First</option>
+        </select>
       </div>
 
-      {filteredAndSortedFavorites.length === 0 ? (
-        <p className="no-results">No matching favorites found.</p>
-      ) : (
-        Object.entries(groupedFavourites).map(([showTitle, seasons]) => (
-          <div key={showTitle} className="favorites-show">
-            <h2 className="show-title">{showTitle}</h2>
-            {Object.entries(seasons).map(([seasonNumber, episodes]) => (
-              <div key={seasonNumber} className="season-group">
-                <h3 className="season-title">Season {seasonNumber}</h3>
-                <ul className="episode-list">
-                  {episodes.map((ep) => (
-                    <li key={`${ep.showId}-${ep.season}-${ep.episodeId}`} className="episode-item">
-                      <div className="episode-thumbnail">
-                        <Link to={`/show/${ep.showId}`}>
-                          <img
-                            src={ep.image || '/placeholder.jpg'}
-                            alt={ep.showTitle}
-                            width={190}
-                            height={120}
-                            onError={(e) => (e.target.src = '/placeholder.jpg')}
-                            className="episode-image"
-                          />
-                        </Link>
-                      </div>
-                      <div className="episode-info">
-                        <p className="episode-title">{ep.title}</p>
-                        <p className="episode-date">Added: {new Date(ep.favouritedAt).toLocaleString()}</p>
-                        <Link to={`/show/${ep.showId}`} className="episode-show-link">
-                          {ep.showTitle}
-                        </Link>
-                      </div>
-                      <div className="episode-action">
-                        <button
-                          onClick={() => handleRemoveFavorite(ep)}
-                          className="remove-button"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        ))
-      )}
+      {/* Show List */}
+      <ul className="show-grid">
+        {filteredAndSortedShows.map((show) => (
+          <li key={show.id} className="show-card">
+            <Link to={`/show/${show.id}`} className="show-link">
+              <img src={show.image} alt={show.title} className="show-image" />
+              <h2>{show.title}</h2>
+              <p className="show-updated">
+                Last Updated: {new Date(show.updated).toLocaleDateString()}
+              </p>
+              <p className="show-genres">
+                Genres: {show.genres?.map(id => GENRE_MAP[id]).join(', ') || 'N/A'}
+              </p>
+            </Link>
+            <button onClick={() => removeFavorite(show.id)} className="remove-button">
+              ★ Unfavorite
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
