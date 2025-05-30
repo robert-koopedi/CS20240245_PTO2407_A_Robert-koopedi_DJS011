@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../index.css';
-
+import '../index.css';  // Your CSS file
 
 function Home() {
   const [shows, setShows] = useState([]);
@@ -9,7 +8,7 @@ function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://podcast-api.netlify.app')
+    fetch('https://podcast-api.netlify.app/shows')
       .then(res => {
         if (!res.ok) {
           throw new Error(`Network response was not ok: ${res.statusText}`);
@@ -29,27 +28,27 @@ function Home() {
       });
   }, []);
 
-  if (loading) return <div className="p-4">Loading shows...</div>;
-  if (error) return <div className="p-4 text-red-600">{error}</div>;
+  if (loading) return <div className="loading">Loading shows...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold bg-red-500 mb-6">Podcast Shows</h1>
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="container">
+      <h1 className="title">Podcast Shows</h1>
+      <ul className="show-grid">
         {shows.map(show => (
-          <li key={show.id} className="border p-4 rounded shadow hover:shadow-lg transition">
-            <Link to={`/show/${show.id}`}>
-              <img src={show.image} alt={show.title} className="w-20 h-48 rounded" />
+          <li key={show.id} className="show-card">
+            <Link to={`/show/${show.id}`} className="show-link">
+              <img src={show.image} alt={show.title} className="show-image" />
               {/* Show podcast title */}
-              <h2 className="mt-2 text-xl font-semibold"> {show.title}</h2>
+              <h2 className="show-title">{show.title}</h2>
               {/* Display genres if available */}
-              <p>
+              <p className="show-genres">
                 Genres: {show.genres && show.genres.length > 0 ? show.genres.join(', ') : 'N/A'}
               </p>
               {/* Display number of seasons if available */}
-              <p>
+              <p className="show-seasons">
                 Seasons: {show.seasons ? show.seasons.length : 'N/A'}
-                </p>
+              </p>
             </Link>
           </li>
         ))}

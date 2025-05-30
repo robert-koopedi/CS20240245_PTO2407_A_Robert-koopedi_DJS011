@@ -9,11 +9,14 @@ import Favorites from './pages/Favorites';
 function App() {
   return (
     <Router>
+  
+       <div className="bg-red-100 min-h-screen">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/show/:id" element={<ShowDetails />} />
         <Route path="/favorites" element={<Favorites />} />
       </Routes>
+      </div>
     </Router>
   );
 }

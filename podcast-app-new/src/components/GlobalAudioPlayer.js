@@ -46,7 +46,8 @@ function GlobalAudioPlayer() {
             onLoadedMetadata={handleLoadedMetadata}
             onTimeUpdate={handleTimeUpdate}
           />
-          
+
+          <div></div>
           <div>
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
