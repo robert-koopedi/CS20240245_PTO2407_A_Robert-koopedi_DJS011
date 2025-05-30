@@ -519,11 +519,38 @@ li.episode-list {
 }
 .filter-bar {
   display: flex;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  /* background-color: #0056b3; */
 }
 
 input[type="text"],
 select {
+  width: auto;
   font-size: 1rem;
+  justify-content: right;
+  /* height: 200px; */
+  width: 100%;
+}
+
+input {
+  width: 70%;
+  border-radius: 1rem;
+  
+}
+
+.filter-controls {
+  display: flex;
+  flex-direction: row;
+  /* background-color: #0056b3; */
+  flex-shrink: 0;
+  width: 100%;
+  
+  
+}
+
+.select {
+  background-color: #0056b3;
+  border-radius: 1rem;
 }

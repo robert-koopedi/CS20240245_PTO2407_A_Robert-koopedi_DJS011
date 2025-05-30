@@ -30,9 +30,9 @@ function EpisodeCard({ episode, showTitle, showId, season }) {
      <div>
       <p>{episode.title}</p>
       <button onClick={handlePlay}>Play</button>
-      <button onClick={handleFavorite} disabled={favorited}>
+      {/* <button onClick={handleFavorite} disabled={favorited}>
        {favorited ? '★ Favorited' : '☆ Add to Favorites'}
-        </button>
+        </button> */}
      </div>
     
   );

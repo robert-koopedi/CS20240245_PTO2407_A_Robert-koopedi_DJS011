@@ -92,42 +92,42 @@ function Home() {
       <h1 className="title">Podcast Shows</h1>
 
       {/* Filters */}
-      <div className="filter-bar" style={{ marginBottom: '1.5rem' }}>
-        <label htmlFor="genreFilter" style={{ marginRight: '0.5rem' }}>
-          Filter by Genre:
-        </label>
-        <select
-          id="genreFilter"
-          value={selectedGenre}
-          onChange={(e) => setSelectedGenre(e.target.value)}
-          style={{ marginRight: '1rem' }}
-        >
-          <option value="All">All Genres</option>
-          {getUniqueGenres().map(id => (
-            <option key={id} value={id}>{GENRE_MAP[id]}</option>
-          ))}
-        </select>
+     <div className="filter-controls" style={{ marginBottom: '1.5rem' }}>
+      
+      {/* Text Search */}
+      <input
+        type="text"
+        placeholder="Search by title..."
+        value={searchText} // or filterText if you prefer consistent naming
+        onChange={(e) => setSearchText(e.target.value)}
+        style={{ marginRight: '1rem', padding: '0.4rem' }}
+      />
 
-        {/* Text Search */}
-        <input
-          type="text"
-          placeholder="Search by title..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          style={{ marginRight: '1rem', padding: '0.4rem' }}
-        />
+      {/* Genre Filter */}
+      <select
+        id="genreFilter"
+        value={selectedGenre}
+        onChange={(e) => setSelectedGenre(e.target.value)}
+        style={{ marginRight: '1rem', padding: '0.4rem', borderRadius: '10px', width: '100px' }}
+      >
+        <option value="All">All Genres</option>
+        {getUniqueGenres().map(id => (
+          <option key={id} value={id}>{GENRE_MAP[id]}</option>
+        ))}
+      </select>
 
-        {/* Sort Options */}
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          style={{ padding: '0.4rem' }}
-        >
-          <option value="titleAsc">Sort A–Z</option>
-          <option value="titleDesc">Sort Z–A</option>
-          <option value="dateDesc">Newest First</option>
-          <option value="dateAsc">Oldest First</option>
-        </select>
+      {/* Sort Options */}
+      <select
+        value={sortOption}
+        onChange={(e) => setSortOption(e.target.value)}
+        style={{ padding: '0.4rem', borderRadius: '10px', width: '100px' }}
+      >
+        <option value="titleAsc">Sort A–Z</option>
+        <option value="titleDesc">Sort Z–A</option>
+        <option value="dateDesc">Newest First</option>
+        <option value="dateAsc">Oldest First</option>
+      </select>
+        
       </div>
 
       {/* Show List */}

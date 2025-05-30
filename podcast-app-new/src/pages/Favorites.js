@@ -51,6 +51,12 @@ function Favorites() {
     localStorage.setItem('favoriteShows', JSON.stringify(updated));
   };
 
+  const clearAllFavorites = () => {
+  setFavoriteShowIds([]);
+  localStorage.removeItem('favoriteShows');
+};
+
+
   const getUniqueGenres = () => {
     const genreSet = new Set();
     shows.forEach(show => {
@@ -115,7 +121,7 @@ function Favorites() {
         <select
           value={selectedGenre}
           onChange={(e) => setSelectedGenre(e.target.value)}
-          style={{ marginRight: '1rem', padding: '0.4rem' }}
+          style={{ marginRight: '1rem', padding: '0.4rem',  borderRadius: '10px', width:'100px' }}
         >
           <option value="All">All Genres</option>
           {getUniqueGenres().map(id => (
@@ -126,7 +132,7 @@ function Favorites() {
         <select
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
-          style={{ padding: '0.4rem' }}
+          style={{ padding: '0.4rem',  borderRadius: '10px', width:'100px' }}
         >
           <option value="titleAsc">Sort A–Z</option>
           <option value="titleDesc">Sort Z–A</option>
@@ -134,6 +140,22 @@ function Favorites() {
           <option value="dateAsc">Oldest First</option>
         </select>
       </div>
+
+      <button
+  onClick={clearAllFavorites}
+  style={{
+    backgroundColor: '#ff4d4d',
+    color: 'white',
+    padding: '0.5rem 1rem',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    marginBottom: '1.5rem',
+  }}
+>
+  Remove All Favorites
+</button>
+
 
       {/* Show List */}
       <ul className="show-grid">
