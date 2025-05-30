@@ -348,7 +348,7 @@ li.episode-list {
 }
 
 .navbar {
-  background-color: #ef4444; /* Tailwind red-500 */
+  background-color: #ef4444;
   padding: 1rem 2rem;
   color: white;
   font-family: sans-serif;;
