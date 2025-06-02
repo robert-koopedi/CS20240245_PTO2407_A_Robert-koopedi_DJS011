@@ -1,4 +1,3 @@
 [build]
-  base = "StudentNo_Classcode_Group_Name-Surname_DJS11"
   command = "npm run build"
   publish = "build"
