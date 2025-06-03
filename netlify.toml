@@ -1,4 +1,3 @@
 [build]
-  base = "podcast-app-new"
   command = "npm run build"
-  publish = "podcast-app-new/build"
+  publish = "build"
