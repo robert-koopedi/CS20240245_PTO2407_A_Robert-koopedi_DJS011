@@ -1,4 +1,3 @@
 [build]
-  base = "CS20240245_PTO2407_A_Robert-koopedi_DJS011"
   command = "npm run build"
   publish = "build"
